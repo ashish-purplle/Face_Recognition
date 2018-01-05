@@ -1,5 +1,8 @@
+from dotenv import load_dotenv, find_dotenv
+load_dotenv(find_dotenv())
 import tornado.ioloop
 import tornado.web
+import os
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
