@@ -26,6 +26,8 @@ class RecognizeHandler(tornado.web.RequestHandler):
     def post(self):
         #self.write(self.request.body)
         img_ba = self.get_argument("img", default=None, strip=False)
+        #with open("imageToSave.jpeg", "wb") as fh:
+         #   fh.write(img_ba.decode('base64'))
         self.write(img_ba)
 
 
