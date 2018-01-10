@@ -15,14 +15,14 @@ import time
 
 align_dlib = AlignDlib(os.path.join(os.path.dirname(__file__), '../model/dlib/shape_predictor_68_face_landmarks.dat'))
 
-def main(args) :
-    directory = args.input_dir
-    arr = os.listdir(directory)
-    dirname = os.path.join(os.getcwd(), directory)
-    for fl in arr:
-        imgpath = os.path.join(dirname, fl)
-        detect(imgpath, args)
-    print("detection done")
+# def main(args) :
+#     directory = args.input_dir
+#     arr = os.listdir(directory)
+#     dirname = os.path.join(os.getcwd(), directory)
+#     for fl in arr:
+#         imgpath = os.path.join(dirname, fl)
+#         detect(imgpath, args)
+#     print("detection done")
 
 def ch_dev(arg_params, aux_params, ctx):
     new_args = dict()
@@ -51,12 +51,19 @@ def resize(im, target_size, max_size):
     return im, im_scale
 
 
-def detect(fl, args):
-    print (fl)
-    image = cv2.imread(fl, )
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    color  = cv2.imread(fl)
-    img  = cv2.cvtColor(color, cv2.COLOR_BGR2RGB)
+def detect(args):
+    #print(fl)
+
+    nparr = np.fromstring(args.img, np.uint8)
+    actual_img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    #cv2.imshow("image", actual_img)
+    #cv2.waitKey(0)
+
+    #image = cv2.imread(fl)
+    image = cv2.cvtColor(actual_img, cv2.COLOR_BGR2RGB)
+
+    #color  = cv2.imread(fl)
+    img  = cv2.cvtColor(actual_img, cv2.COLOR_BGR2RGB)
     img, scale = resize(img.copy(), args.scale, args.max_scale)
     im_info = np.array([[img.shape[0], img.shape[1], scale]], dtype=np.float32)  # (h, w, scale)
     img = np.swapaxes(img, 0, 2)
@@ -92,6 +99,7 @@ def detect(fl, args):
     toc = time.time()
 
     print ("time cost is:{}s".format(toc-tic))
+    resized_images =[]
     for i in range(dets.shape[0]):
         bbox = dets[i, :4]
         bb = dlib.rectangle(int(round(bbox[0]/scale)), int(round(bbox[1]/scale)), int(round(bbox[2]/scale)), int(round(bbox[3]/scale)))
@@ -104,16 +112,18 @@ def detect(fl, args):
         if not os.path.exists(image_output_dir):
             os.makedirs(image_output_dir)
         cv2.imwrite(os.path.join(image_output_dir, "{}.jpg".format(int(time.time()*100000))), resized_image)
-    cv2.imwrite("result.jpg", color)
+        resized_images.append(resized_image)
+    return resized_images
+    #cv2.imwrite("result.jpg", color)
 
 
 def init(img):
     parser = argparse.ArgumentParser(description="use pre-trainned resnet model to classify one image")
-    parser.add_argument('--input-dir', type=str, action='store', default='input', dest='input_dir')
+    parser.add_argument('--input-dir', type=str, action='store', default='temp', dest='input_dir')
     parser.add_argument('--output-dir', type=str, action='store', default='output', dest='output_dir')
 
 
-    parser.add_argument('--img', type=str, default=img, help='input image for classification',dest='img_url')
+    parser.add_argument('--img', type=str, default=img, help='input image for classification',dest='img')
     parser.add_argument('--gpu', type=int, default=0, help='the gpu id used for predict')
     parser.add_argument('--prefix', type=str, default='detection/mxnet-face-fr50', help='the prefix of the pre-trained model')
     parser.add_argument('--epoch', type=int, default=0, help='the epoch of the pre-trained model')
@@ -126,17 +136,18 @@ def init(img):
     parser.add_argument('--max-scale', type=int, default=1000, help='the maximize scale after resize')
 
     args = parser.parse_args()
-    fullfilename = (os.path.join(args.input_dir, args.img_url.split('/')[-1]))
-    print(fullfilename)
+    #fullfilename = (os.path.join(args.input_dir, args.img_url.split('/')[-1]))
+    #print(fullfilename)
 
-    urllib.request.urlretrieve(args.img_url,fullfilename)
+    #urllib.request.urlretrieve(args.img_url,fullfilename)
 
     config.END2END = 1
     config.TEST.HAS_RPN = True
     config.TEST.RPN_MIN_SIZE = args.min_size
     config.SCALES = (args.scale,)
     config.MAX_SIZE = args.max_scale
-    main(args)
+    # main(args)
+    return detect(args)
 
 if __name__ == "__main__":
     init()
