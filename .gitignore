@@ -3,4 +3,5 @@ out
 output
 etc
 detection/mxnet-face-fr50-0000.params
+TrainingData
 .idea
