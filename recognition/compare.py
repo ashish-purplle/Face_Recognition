@@ -91,13 +91,13 @@ def compare_two_face(para,root,img_to_compare):
                         is_match_found = True
                         print("Matched Folder Found")
                         break
-                if is_match_found == False:
-                    ct = format(int(time.time() * 100000))
-                    folder_name = os.path.join(root, str(ct))
-                    print("Matched Folder Not Found")
-                    if not os.path.exists(folder_name):
-                        os.makedirs(folder_name)
-                        cv2.imwrite(os.path.join(folder_name, "{}.jpg".format(int(time.time() * 100000))),
+        if is_match_found == False:
+            ct = format(int(time.time() * 100000))
+            folder_name = os.path.join(root, str(ct))
+            print("Matched Folder Not Found")
+            if not os.path.exists(folder_name):
+                os.makedirs(folder_name)
+                cv2.imwrite(os.path.join(folder_name, "{}.jpg".format(int(time.time() * 100000))),
                                     img_to_compare)
 
     else :
