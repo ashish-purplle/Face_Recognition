@@ -25,7 +25,7 @@ logger.setLevel(logging.INFO)
 logger.addFilter(AppFilter())
 
 
-fh = logging.handlers.RotatingFileHandler(filename="text-classification.log", mode='a', maxBytes=5*1024*1024,
+fh = logging.handlers.RotatingFileHandler(filename="image-recognition.log", mode='a', maxBytes=5*1024*1024,
                                  backupCount=20, encoding=None, delay=0)
 fh.setLevel(logging.INFO)
 

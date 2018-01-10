@@ -4,11 +4,15 @@ import numpy as np
 import cv2
 import os
 import time
+import string
+import  calendar
+import random
+import uuid
 
 def read2img(root, name1, name2, size, ctx):
     pair_arr = np.zeros((2, 1, size, size), dtype=float)
-    imgA = cv2.imread(os.path.join(root, name1), 0);
-    imgB = cv2.imread(os.path.join(root, name2), 0);
+    imgA = cv2.cvtColor(name1, cv2.COLOR_BGR2GRAY);
+    imgB = cv2.imread(name2, 0);
     #cv2.imshow("image1", imgA);
     #cv2.waitKey(0);
     #imgA = cv2.cvtColor(imgA,cv2.COLOR_BGR2GRAY);
@@ -58,20 +62,53 @@ def lightened_cnn_b(num_classes=10575):
      return softmax
 
 
-def compare_two_face(para,root,pathA,pathB):
+def compare_two_face(para,root,img_to_compare):
     _, model_args, model_auxs = para;
     ctx = mx.cpu(0);
     symbol = lightened_cnn_b_feature()
-    #exector = symbol.bind(ctx, model_args, args_grad=None, grad_req="null", aux_states=model_auxs)
-    model_args['data'] = mx.nd.array(read2img(root, pathA, pathB, 128, ctx), ctx)
-    exector = symbol.bind(ctx, model_args, args_grad=None, grad_req="null", aux_states=model_auxs)
+    sub_folders = os.listdir(root)
+    #print(sub_folders)
+    #print("Already Existed Sub folders",len(sub_folders))
+    if(len(sub_folders) > 0):
+        for folder in sub_folders:  # loop through all the files and folders
+            if os.path.isdir(os.path.join(root, folder)):  # check whether the current object is a folder or not
+                sub_folder = os.path.join(root, folder)
+                is_match_found = False
+                for img in os.listdir(sub_folder):
+                    imgpath = os.path.join(sub_folder, img)
+                    pathB = imgpath
+                    model_args['data'] = mx.nd.array(read2img(root, img_to_compare, pathB, 128, ctx), ctx)
+                    exector = symbol.bind(ctx, model_args, args_grad=None, grad_req="null", aux_states=model_auxs)
+                    exector.forward(is_train=False)
+                    exector.outputs[0].wait_to_read()
+                    output = exector.outputs[0].asnumpy()
+                    dis = np.dot(output[0], output[1]) / np.linalg.norm(output[0]) / np.linalg.norm(output[1])
+                    print("--------Score------",dis)
 
-    exector.forward(is_train=False)
-    exector.outputs[0].wait_to_read()
-    output = exector.outputs[0].asnumpy()
-    dis = np.dot(output[0], output[1]) / np.linalg.norm(output[0]) / np.linalg.norm(output[1])
-    return dis
+                    if (dis > 0.60):
+                        cv2.imwrite(os.path.join(sub_folder, "{}.jpg".format(int(time.time() * 100000))),
+                                img_to_compare)
+                        is_match_found = True
+                        print("Matched Folder Found")
+                        break
+                if is_match_found == False:
+                    ct = format(int(time.time() * 100000))
+                    folder_name = os.path.join(root, str(ct))
+                    print("Matched Folder Not Found")
+                    if not os.path.exists(folder_name):
+                        os.makedirs(folder_name)
+                        cv2.imwrite(os.path.join(folder_name, "{}.jpg".format(int(time.time() * 100000))),
+                                    img_to_compare)
 
+    else :
+        ct = format(int(time.time()*100000))
+
+        folder_name = os.path.join(root, str(ct))
+        print("------Folder Not Exist------", folder_name)
+        if not os.path.exists(folder_name):
+            os.makedirs(folder_name)
+            cv2.imwrite(os.path.join(folder_name, "{}.jpg".format(int(time.time() * 100000))),
+                        img_to_compare)
 def loadModel(modelpath,epoch):
      return mx.model.load_checkpoint(modelpath, epoch)
 

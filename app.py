@@ -2,7 +2,13 @@ from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 import tornado.ioloop
 import tornado.web
+#import datalayer as dtl
 import os
+import base64
+import  numpy as np
+import cv2
+from detection import preprocess as prep
+from recognition import compare as cmp
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
@@ -27,12 +33,21 @@ class RecognizeHandler(tornado.web.RequestHandler):
         print("detect start")
         self.write("recognize")
     def post(self):
-        #self.write(self.request.body)
-        img_ba = self.get_argument("img", default=None, strip=False)
-        #with open("imageToSave.jpeg", "wb") as fh:
-         #   fh.write(img_ba.decode('base64'))
-        self.write(img_ba)
-
+        image_stream = self.request.files['img'][0]
+        image_64_encode = base64.encodestring(image_stream['body'])
+        image_64_decode = base64.decodestring(image_64_encode)
+        print("-------Detection Started-----")
+        detected_imgs = prep.init(image_64_decode)
+        print("-------Detection Complete-----")
+        print("No. of Detected Images ",len(detected_imgs))
+        print("-------Recognition Started-----")
+        model = 'model/lightened_cnn/lightened_cnn'
+        para = cmp.loadModel(model, 0)
+        for index in range(len(detected_imgs)):
+            inputPath = '/Users/admin/Work/Face_Recognition/out'
+            print("Recognition started for Face ",index+1 )
+            cmp.compare_two_face(para, inputPath,detected_imgs[index])
+        print("-------Recognition Complete-----")
 
 def make_app():
     return tornado.web.Application([
