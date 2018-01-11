@@ -1,0 +1,56 @@
+[11-01-2018 06:32:48] [INFO] [] [] [] [inside insertData function try block] 
+[11-01-2018 06:32:48] [ERROR] [] [] [] [error while inserting the data] 
+Traceback (most recent call last):
+  File "/Users/admin/Work/Face_Recognition/datalayer.py", line 37, in insertDataInClassInfo
+    rows = session.execute(query=insertClassInfoQuery, parameters=[data.classId,current_time])
+AttributeError: 'dict' object has no attribute 'classId'
+[11-01-2018 06:33:59] [INFO] [] [] [] [inside insertData function try block] 
+[11-01-2018 06:33:59] [INFO] [] [] [] [inside insertData function try block data fetched successfully] 
+[11-01-2018 06:34:53] [INFO] [] [] [] [inside insertData function try block] 
+[11-01-2018 06:34:53] [INFO] [] [] [] [inside insertData function try block data fetched successfully] 
+[11-01-2018 06:34:53] [INFO] [] [] [] [inside insertData function try block] 
+[11-01-2018 06:34:53] [INFO] [] [] [] [inside insertData function try block data fetched successfully] 
+[11-01-2018 06:50:37] [INFO] [] [] [] [inside insertData function try block] 
+[11-01-2018 06:50:37] [ERROR] [] [] [] [error while inserting the data] 
+Traceback (most recent call last):
+  File "/Users/admin/Work/Face_Recognition/datalayer.py", line 49, in insertDataInImageByClass
+    rows = session.execute(query=insertClassInfoQuery, parameters=[data['classId'],data['cameraId'],data['location'],data['s3url'],current_time])
+KeyError: 's3url'
+[11-01-2018 07:01:16] [INFO] [] [] [] [inside insertData function try block] 
+[11-01-2018 07:01:16] [ERROR] [] [] [] [error while inserting the data] 
+Traceback (most recent call last):
+  File "/Users/admin/Work/Face_Recognition/datalayer.py", line 49, in insertDataInImageByClass
+    rows = session.execute(query=insertClassInfoQuery, parameters=[data['classId'],data['cameraId'],data['location'],data['s3url'],current_time])
+KeyError: 's3url'
+[11-01-2018 07:04:37] [INFO] [] [] [] [inside insertData function try block] 
+[11-01-2018 07:04:37] [ERROR] [] [] [] [error while inserting the data] 
+Traceback (most recent call last):
+  File "/Users/admin/Work/Face_Recognition/datalayer.py", line 49, in insertDataInImageByClass
+    rows = session.execute(query=insertClassInfoQuery, parameters=[data['classId'],data['cameraId'],data['location'],data['s3url'],current_time])
+KeyError: 's3url'
+[11-01-2018 07:07:50] [INFO] [] [] [] [inside insertData function try block] 
+[11-01-2018 07:07:50] [ERROR] [] [] [] [error while inserting the data] 
+Traceback (most recent call last):
+  File "/Users/admin/Work/Face_Recognition/datalayer.py", line 49, in insertDataInImageByClass
+    rows = session.execute(query=insertClassInfoQuery, parameters=[data['classId'],data['cameraId'],data['location'],data['s3url'],current_time])
+  File "cassandra/cluster.py", line 2122, in cassandra.cluster.Session.execute
+  File "cassandra/cluster.py", line 2159, in cassandra.cluster.Session.execute_async
+  File "cassandra/cluster.py", line 2173, in cassandra.cluster.Session._create_response_future
+  File "cassandra/query.py", line 451, in cassandra.query.PreparedStatement.bind
+  File "cassandra/query.py", line 552, in cassandra.query.BoundStatement.bind
+ValueError: Too many arguments provided to bind() (got 5, expected 2)
+[11-01-2018 07:10:05] [INFO] [] [] [] [inside insertData function try block] 
+[11-01-2018 07:10:05] [ERROR] [] [] [] [error while inserting the data] 
+Traceback (most recent call last):
+  File "/Users/admin/Work/Face_Recognition/datalayer.py", line 49, in insertDataInImageByClass
+    rows = session.execute(query=insertClassInfoQuery, parameters=[data['classId'],data['cameraId'],data['location'],data['s3url'],current_time])
+  File "cassandra/cluster.py", line 2122, in cassandra.cluster.Session.execute
+  File "cassandra/cluster.py", line 2159, in cassandra.cluster.Session.execute_async
+  File "cassandra/cluster.py", line 2173, in cassandra.cluster.Session._create_response_future
+  File "cassandra/query.py", line 451, in cassandra.query.PreparedStatement.bind
+  File "cassandra/query.py", line 552, in cassandra.query.BoundStatement.bind
+ValueError: Too many arguments provided to bind() (got 5, expected 2)
+[11-01-2018 07:11:43] [INFO] [] [] [] [inside insertData function try block] 
+[11-01-2018 07:11:43] [INFO] [] [] [] [inside insertData function try block data fetched successfully] 
+[11-01-2018 07:15:48] [INFO] [] [] [] [inside insertData function try block] 
+[11-01-2018 07:15:48] [INFO] [] [] [] [inside insertData function try block data fetched successfully] 

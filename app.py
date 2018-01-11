@@ -15,7 +15,9 @@ from handlers import detectionhandler as dh
 def make_app():
     return tornado.web.Application([
         (r"/detect", dh.DetectionHandler),
-        (r"/jio/recognition/v1/compareface", rbch.RecognizeByCompareHandler),
+        (r"/jio/recognition/compareface/savefaces/v1", rbch.savefaces),
+        (r"/jio/recognition/compareface/predict/v1", rbch.predict),
+        (r"/jio/recognition/compareface/makecollage/v1", rbch.makecollage),
         (r"/jio/recognition/v1/searchface", rbmh.RecognizeByModelHandler),
     ])
 
