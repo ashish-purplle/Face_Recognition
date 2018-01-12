@@ -13,6 +13,10 @@ from timeit import default_timer as timer
 from detection import preprocess as prep
 from recognition import compare as cmp
 import servicelayer as sl
+import collage as col;
+import shutil
+
+
 
 def detectImageAndAssignClasses(obj,step):
     image_64_decode = decodeImage(obj)
@@ -27,8 +31,8 @@ def detectImageAndAssignClasses(obj,step):
     model = 'model/lightened_cnn/lightened_cnn'
     para = cmp.loadModel(model, 0)
     for index in range(len(detected_imgs)):
-        inputPath = '/Users/admin/Work/Face_Recognition/out'
-        response = cmp.compare_two_face(obj,para, inputPath, detected_imgs[index],step,image_64_decode,createRandomImageId("main_img"))
+
+        response = cmp.compare_two_face(obj,para, os.environ.get("DETECTED_FACES_STORE_PATH"), detected_imgs[index],step,image_64_decode,createRandomImageId("main_img"))
     rec_end = timer()
     print("-------Recognition Complete-----")
     print("-------Total time in Recognition-----",(rec_end-rec_start))
@@ -62,5 +66,15 @@ class predict(tornado.web.RequestHandler):
 class makecollage(tornado.web.RequestHandler):
     def post(self):
         response = detectImageAndAssignClasses(self,3)
+        print(response)
+        if(response['status'] != 'error'):
+            s3url = col.generateCollage(folderPath=response['folderPath'],width=800,height=250,shuffle=True,classid=response['classId'])
+            shutil.rmtree(response['folderPath'])
+            shutil.rmtree(os.path.join(os.environ.get("DETECTED_FACES_STORE_PATH"),response['classId']))
+            response ={}
+            response['image_url'] = s3url
+
+        self.write(json.dumps(response))
+
 
 

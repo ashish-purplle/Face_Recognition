@@ -107,11 +107,11 @@ def detect(args):
 
         resized_image = cv2.cvtColor(resized_image, cv2.COLOR_BGR2RGB)
 
-        dirname = os.getcwd()
-        image_output_dir = os.path.join(dirname, args.output_dir)
-        if not os.path.exists(image_output_dir):
-            os.makedirs(image_output_dir)
-        cv2.imwrite(os.path.join(image_output_dir, "{}.jpg".format(int(time.time()*100000))), resized_image)
+        # dirname = os.getcwd()
+        # image_output_dir = os.path.join(dirname, args.output_dir)
+        # if not os.path.exists(image_output_dir):
+        #     os.makedirs(image_output_dir)
+        # cv2.imwrite(os.path.join(image_output_dir, "{}.jpg".format(int(time.time()*100000))), resized_image)
         resized_images.append(resized_image)
     return resized_images
     #cv2.imwrite("result.jpg", color)

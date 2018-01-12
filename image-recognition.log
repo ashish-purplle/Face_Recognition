@@ -104,3 +104,47 @@ ValueError: Too many arguments provided to bind() (got 5, expected 2)
 [11-01-2018 08:21:11] [INFO] [] [] [] [inside insertData function try block data fetched successfully] 
 [11-01-2018 08:21:25] [INFO] [] [] [] [inside insertData function try block] 
 [11-01-2018 08:21:25] [INFO] [] [] [] [inside insertData function try block data fetched successfully] 
+[12-01-2018 02:38:13] [INFO] [] [] [] [inside insertData function try block] 
+[12-01-2018 02:38:13] [INFO] [] [] [] [inside insertData function try block data fetched successfully] 
+[12-01-2018 02:38:46] [INFO] [] [] [] [inside insertData function try block] 
+[12-01-2018 02:38:46] [INFO] [] [] [] [inside insertData function try block data fetched successfully] 
+[12-01-2018 02:40:26] [INFO] [] [] [] [inside insertData function try block] 
+[12-01-2018 02:40:26] [INFO] [] [] [] [inside insertData function try block data fetched successfully] 
+[12-01-2018 02:43:49] [INFO] [] [] [] [inside insertData function try block] 
+[12-01-2018 02:43:49] [INFO] [] [] [] [inside insertData function try block data fetched successfully] 
+[12-01-2018 02:54:22] [INFO] [] [] [] [inside insertData function try block] 
+[12-01-2018 02:54:22] [ERROR] [] [] [] [error while inserting the data] 
+Traceback (most recent call last):
+  File "/Users/admin/Work/Face_Recognition/datalayer.py", line 49, in insertDataInImageByClass
+    rows = session.execute(query=insertImageByClassQuery, parameters=[data['classId'],data['cameraId'],data['location'],data['s3url'],current_time])
+  File "cassandra/cluster.py", line 2122, in cassandra.cluster.Session.execute
+  File "cassandra/cluster.py", line 3982, in cassandra.cluster.ResponseFuture.result
+cassandra.InvalidRequest: Error from server: code=2200 [Invalid query] message="Invalid null value in condition for column camera_id"
+[12-01-2018 02:55:45] [INFO] [] [] [] [inside insertData function try block] 
+[12-01-2018 02:55:45] [ERROR] [] [] [] [error while inserting the data] 
+Traceback (most recent call last):
+  File "/Users/admin/Work/Face_Recognition/datalayer.py", line 49, in insertDataInImageByClass
+    rows = session.execute(query=insertImageByClassQuery, parameters=[data['classId'],data['cameraId'],data['location'],data['s3url'],current_time])
+  File "cassandra/cluster.py", line 2122, in cassandra.cluster.Session.execute
+  File "cassandra/cluster.py", line 3982, in cassandra.cluster.ResponseFuture.result
+cassandra.InvalidRequest: Error from server: code=2200 [Invalid query] message="Invalid null value in condition for column camera_id"
+[12-01-2018 03:00:57] [INFO] [] [] [] [inside insertData function try block] 
+[12-01-2018 03:00:57] [INFO] [] [] [] [inside insertData function try block data fetched successfully] 
+[12-01-2018 03:01:26] [INFO] [] [] [] [inside insertData function try block] 
+[12-01-2018 03:01:26] [INFO] [] [] [] [inside insertData function try block data fetched successfully] 
+[12-01-2018 03:03:28] [INFO] [] [] [] [inside insertData function try block] 
+[12-01-2018 03:03:28] [INFO] [] [] [] [inside insertData function try block data fetched successfully] 
+[12-01-2018 04:15:28] [INFO] [] [] [] [inside insertData function try block] 
+[12-01-2018 04:15:28] [INFO] [] [] [] [inside insertData function try block data fetched successfully] 
+[12-01-2018 04:47:19] [INFO] [] [] [] [inside insertData function try block] 
+[12-01-2018 04:47:19] [INFO] [] [] [] [inside insertData function try block data fetched successfully] 
+[12-01-2018 04:48:29] [INFO] [] [] [] [inside insertData function try block] 
+[12-01-2018 04:48:29] [INFO] [] [] [] [inside insertData function try block data fetched successfully] 
+[12-01-2018 04:49:06] [INFO] [] [] [] [inside insertData function try block] 
+[12-01-2018 04:49:06] [INFO] [] [] [] [inside insertData function try block data fetched successfully] 
+[12-01-2018 04:53:47] [INFO] [] [] [] [inside insertData function try block] 
+[12-01-2018 04:53:47] [INFO] [] [] [] [inside insertData function try block data fetched successfully] 
+[12-01-2018 05:51:15] [INFO] [] [] [] [inside insertData function try block] 
+[12-01-2018 05:51:15] [INFO] [] [] [] [inside insertData function try block data fetched successfully] 
+[12-01-2018 05:54:22] [INFO] [] [] [] [inside insertData function try block] 
+[12-01-2018 05:54:22] [INFO] [] [] [] [inside insertData function try block data fetched successfully] 

@@ -69,7 +69,8 @@ def lightened_cnn_b(num_classes=10575):
 
     return softmax
 
-def storeImageOnDisk(root,image):
+
+def storeImageOnDisk(root, image, step):
     classId = format(int(time.time() * 100000))
     folder = os.path.join(root, str(classId))
     if not os.path.exists(folder):
@@ -79,14 +80,26 @@ def storeImageOnDisk(root,image):
     insertInClassInfo(classId)
     return classId
 
+
+def stoteMainImageOnDisk(mainImgRootPath, classId, image):
+    nparr = np.fromstring(image, np.uint8)
+    image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    folder = os.path.join(mainImgRootPath, str(classId))
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+    cv2.imwrite(os.path.join(folder, "{}.jpg".format(int(time.time() * 100000))),
+                image)
+
+
 def insertInClassInfo(classId):
-    print("classId",classId)
-    data ={}
+    print("classId", classId)
+    data = {}
     data['classId'] = classId
     dl.insertDataInClassInfo(data)
 
-def insertInImageByName(reqObj,classId,s3url):
-    data ={}
+
+def insertInImageByName(reqObj, classId, s3url, step):
+    data = {}
     data['classId'] = classId
     data['s3url'] = s3url
     data['cameraId'] = reqObj.request.headers.get("camera_id")
@@ -94,22 +107,26 @@ def insertInImageByName(reqObj,classId,s3url):
     dl.insertDataInImageByClass(data)
     return classId
 
-def uploadImageToS3(image_64_decode,actual_img_id):
+
+def uploadImageToS3(image_64_decode, actual_img_id):
     s3url = sl.uploadToS3(image_64_decode, actual_img_id)
-    print("s3Url->",s3url)
+    print("s3Url->", s3url)
     return s3url
 
-def compare(reqObj,para, root, img_to_compare,step,image_64_decode,actual_img_id):
+
+def compare(reqObj, para, root, img_to_compare, step, image_64_decode, actual_img_id):
     _, model_args, model_auxs = para;
     ctx = mx.cpu(0);
     symbol = lightened_cnn_b_feature()
     sub_folders = os.listdir(root)
     is_match_found = False
+    if_class_found = False
     if (len(sub_folders) > 0):
         for folder in sub_folders:  # loop through all the files and folders
             if os.path.isdir(os.path.join(root, folder)):  # check whether the current object is a folder or not
                 sub_folder = os.path.join(root, folder)
-
+                classId = folder
+                if_class_found = True
                 for img in os.listdir(sub_folder):
                     imgpath = os.path.join(sub_folder, img)
                     pathB = imgpath
@@ -122,36 +139,47 @@ def compare(reqObj,para, root, img_to_compare,step,image_64_decode,actual_img_id
                     print("--------Score------", dis)
 
                     if (dis > 0.60):
+
                         if step == 2:
-                            s3url = uploadImageToS3(image_64_decode,actual_img_id)
-                            classId = insertInImageByName(reqObj,folder,s3url)
+                            # s3url = uploadImageToS3(image_64_decode,actual_img_id)
+                            stoteMainImageOnDisk(os.environ.get("MAIN_IMAGES_STORE_PATH"), folder, image_64_decode)
+                            # classId = insertInImageByName(reqObj,folder,s3url)
                         is_match_found = True
                         break
 
-        if is_match_found == False and step == 1:
-            classId= storeImageOnDisk(root,img_to_compare)
+        if is_match_found == False and (step == 1):
+            classId = storeImageOnDisk(root, img_to_compare, step)
+            if_class_found = True
 
-    elif step == 1:
-        classId = storeImageOnDisk(root,img_to_compare)
+    elif (step == 1):
+        classId = storeImageOnDisk(root, img_to_compare, step)
+        if_class_found = True
+    if if_class_found == True:
+        resp={}
+        resp['status'] = 'success'
+        if step == 1:
+            resp['classId'] = classId
+            # b64 = base64.b64encode(img_to_compare)
+            # b64decodestring = base64.decodestring(b64)
+            # q = np.frombuffer(b64decodestring, dtype=np.float64)
+            # resp['thumbnail'] = q
 
-    if step == 1:
+        if step == 2:
+            resp['classId'] = classId
+            # resp['image_url'] = s3url
+        if step == 3:
+            resp['classId'] = classId
+            resp['folderPath'] = os.environ.get("MAIN_IMAGES_STORE_PATH") + '/' + classId
+    else:
         resp ={}
-        resp['classId'] = classId
-        # b64 = base64.b64encode(img_to_compare)
-        # b64decodestring = base64.decodestring(b64)
-        # q = np.frombuffer(b64decodestring, dtype=np.float64)
-        #
-        # resp['thumbnail'] = q
-
-
-    if step == 2:
-        resp = {}
-        resp['classId'] = classId
-        resp['image_url'] = s3url
+        resp['status'] = 'error'
+        resp['message']="No Class Found"
     return resp
 
-def compare_two_face(reqObj,para, root, img_to_compare, step,image_64_decode,actual_img_id):
-    return compare(reqObj,para,root,img_to_compare,step,image_64_decode,actual_img_id)
+
+def compare_two_face(reqObj, para, root, img_to_compare, step, image_64_decode, actual_img_id):
+    return compare(reqObj, para, root, img_to_compare, step, image_64_decode, actual_img_id)
+
 
 def loadModel(modelpath, epoch):
     return mx.model.load_checkpoint(modelpath, epoch)

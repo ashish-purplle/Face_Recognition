@@ -5,6 +5,12 @@ import os
 import random
 from PIL import Image
 import servicelayer as sl
+import base64
+import  cv2
+import numpy as np
+from PIL import Image
+import io
+from io import StringIO
 
 
 def make_collage(images, width, init_height,classid):
@@ -71,10 +77,18 @@ def make_collage(images, width, init_height,classid):
                     collage_image.paste(img, (int(x), int(y)))
                 x += img.size[0] + margin_size
             y += int(init_height / coef) + margin_size
-    # collage_image.save(filename)
-    sl.uploadToS3(collage_image,classid+".jpg")
 
-    return True
+    print(collage_image.size)
+
+    in_mem_file = io.BytesIO()
+
+
+    collage_image.save(in_mem_file, format="jpeg")
+
+
+    main_img_urls = sl.uploadToS3(in_mem_file.getvalue(),classid+".jpg")
+
+    return main_img_urls
 
 # def main():
 #     # prepare argument parser
@@ -115,8 +129,12 @@ def make_collage(images, width, init_height,classid):
 
 def generateCollage(folderPath,width,height,shuffle,classid):
     try:
+        print(folderPath)
+        print(classid)
         files = [os.path.join(folderPath, fn) for fn in os.listdir(folderPath)]
+        print(files)
         images = [fn for fn in files if os.path.splitext(fn)[1].lower() in ('.jpg', '.jpeg', '.png')]
+        print(images)
         if not images:
             print('No images for making collage! Please select other directory with images!')
             exit(1)
@@ -128,5 +146,6 @@ def generateCollage(folderPath,width,height,shuffle,classid):
             print('Failed to create collage!')
             exit(1)
         print('Collage is ready!')
+        return res
     except Exception as e:
-        print e
+        print(e)
