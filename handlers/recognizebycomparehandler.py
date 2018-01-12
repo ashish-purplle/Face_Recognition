@@ -8,6 +8,7 @@ import base64
 import  numpy as np
 import cv2
 import  time
+import json
 from timeit import default_timer as timer
 from detection import preprocess as prep
 from recognition import compare as cmp
@@ -27,10 +28,11 @@ def detectImageAndAssignClasses(obj,step):
     para = cmp.loadModel(model, 0)
     for index in range(len(detected_imgs)):
         inputPath = '/Users/admin/Work/Face_Recognition/out'
-        cmp.compare_two_face(obj,para, inputPath, detected_imgs[index],step,image_64_decode,createRandomImageId("main_img"))
+        response = cmp.compare_two_face(obj,para, inputPath, detected_imgs[index],step,image_64_decode,createRandomImageId("main_img"))
     rec_end = timer()
     print("-------Recognition Complete-----")
     print("-------Total time in Recognition-----",(rec_end-rec_start))
+    return response
 
 def decodeImage(obj):
     image_stream = obj.request.files['img'][0]
@@ -46,44 +48,19 @@ def createRandomImageId(param):
 
 class savefaces(tornado.web.RequestHandler):
     def post(self):
-        detectImageAndAssignClasses(self,1)
+        response = detectImageAndAssignClasses(self,1)
+        print(response)
+        print(json.dumps(response))
+        self.write(json.dumps(response))
 
 
 class predict(tornado.web.RequestHandler):
     def post(self):
-        detectImageAndAssignClasses(self,2)
+        response = detectImageAndAssignClasses(self,2)
+        self.write(json.dumps(response))
 
 class makecollage(tornado.web.RequestHandler):
     def post(self):
-        detectImageAndAssignClasses(self,3)
+        response = detectImageAndAssignClasses(self,3)
 
-# class RecognizeByCompareHandler(tornado.web.RequestHandler):
-#     def post(self):
-#         image_stream = self.request.files['img'][0]
-#         image_64_encode = base64.encodestring(image_stream['body'])
-#         image_64_decode = base64.decodestring(image_64_encode)
-#         main_img_name ="{}.jpeg".format(int(time.time() * 100000))
-#         print(main_img_name)
-#         main_img_url = sl.uploadToS3(image_64_decode,main_img_name)
-#         print(main_img_url)
-#         print("-------Detection Started-----")
-#         detected_imgs = prep.init(image_64_decode)
-#         print("-------Detection Complete-----")
-#         print("No. of Detected Images ",len(detected_imgs))
-#         print("-------Recognition Started-----")
-#         model = 'model/lightened_cnn/lightened_cnn'
-#         para = cmp.loadModel(model, 0)
-#         for index in range(len(detected_imgs)):
-#             inputPath = '/Users/admin/Work/Face_Recognition/out'
-#             print("Recognition started for Face ",index+1 )
-#             cmp.compare_two_face(para, inputPath,detected_imgs[index])
-#         print("-------Recognition Complete-----")
-#
-#     def savefaces(self):
-#
-#
-#     def predict(self):
-#         print("in predict")
-#
-#     def makecollage(self):
-#         print("in makecollage")
+

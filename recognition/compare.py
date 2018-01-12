@@ -10,6 +10,7 @@ import random
 import uuid
 import datalayer as dl
 import servicelayer as sl
+import base64
 
 
 def read2img(root, name1, name2, size, ctx):
@@ -76,6 +77,7 @@ def storeImageOnDisk(root,image):
     cv2.imwrite(os.path.join(folder, "{}.jpg".format(int(time.time() * 100000))),
                 image)
     insertInClassInfo(classId)
+    return classId
 
 def insertInClassInfo(classId):
     print("classId",classId)
@@ -90,6 +92,7 @@ def insertInImageByName(reqObj,classId,s3url):
     data['cameraId'] = reqObj.request.headers.get("camera_id")
     data['location'] = reqObj.request.headers.get("location")
     dl.insertDataInImageByClass(data)
+    return classId
 
 def uploadImageToS3(image_64_decode,actual_img_id):
     s3url = sl.uploadToS3(image_64_decode, actual_img_id)
@@ -121,18 +124,34 @@ def compare(reqObj,para, root, img_to_compare,step,image_64_decode,actual_img_id
                     if (dis > 0.60):
                         if step == 2:
                             s3url = uploadImageToS3(image_64_decode,actual_img_id)
-                            insertInImageByName(reqObj,folder,s3url)
+                            classId = insertInImageByName(reqObj,folder,s3url)
                         is_match_found = True
                         break
 
         if is_match_found == False and step == 1:
-            storeImageOnDisk(root,img_to_compare)
+            classId= storeImageOnDisk(root,img_to_compare)
 
     elif step == 1:
-        storeImageOnDisk(root,img_to_compare)
+        classId = storeImageOnDisk(root,img_to_compare)
+
+    if step == 1:
+        resp ={}
+        resp['classId'] = classId
+        # b64 = base64.b64encode(img_to_compare)
+        # b64decodestring = base64.decodestring(b64)
+        # q = np.frombuffer(b64decodestring, dtype=np.float64)
+        #
+        # resp['thumbnail'] = q
+
+
+    if step == 2:
+        resp = {}
+        resp['classId'] = classId
+        resp['image_url'] = s3url
+    return resp
 
 def compare_two_face(reqObj,para, root, img_to_compare, step,image_64_decode,actual_img_id):
-    compare(reqObj,para,root,img_to_compare,step,image_64_decode,actual_img_id)
+    return compare(reqObj,para,root,img_to_compare,step,image_64_decode,actual_img_id)
 
 def loadModel(modelpath, epoch):
     return mx.model.load_checkpoint(modelpath, epoch)
