@@ -3,6 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="7c1e54e7-a5a8-4deb-b0e6-d1eb754cf4f7" name="Default" comment="">
 <<<<<<< HEAD
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change beforePath="$PROJECT_DIR$/handlers/recognizebycomparehandler.py" afterPath="$PROJECT_DIR$/handlers/recognizebycomparehandler.py" />
+=======
+<<<<<<< HEAD
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.env" afterPath="$PROJECT_DIR$/.env" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/Face recognition.iml" afterPath="$PROJECT_DIR$/.idea/Face recognition.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
@@ -15,6 +19,7 @@
       <change beforePath="$PROJECT_DIR$/app.py" afterPath="$PROJECT_DIR$/app.py" />
       <change beforePath="$PROJECT_DIR$/recognition/compare.py" afterPath="$PROJECT_DIR$/recognition/compare.py" />
 >>>>>>> 1b61aed83b85ff31e23805ecafa7d030791a864b
+>>>>>>> 2cbed67aaf43d9b4bfa789ff8b27086e2368aef5
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -77,11 +82,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="recognizebycomparehandler.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="recognizebycomparehandler.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/handlers/recognizebycomparehandler.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="10" column="37" lean-forward="false" selection-start-line="10" selection-start-column="37" selection-end-line="10" selection-end-column="37" />
+            <state relative-caret-position="345">
+              <caret line="23" column="38" lean-forward="true" selection-start-line="23" selection-start-column="38" selection-end-line="23" selection-end-column="38" />
               <folding />
             </state>
           </provider>
@@ -196,12 +201,16 @@
         <option value="$PROJECT_DIR$/app.py" />
         <option value="$PROJECT_DIR$/app.py" />
 <<<<<<< HEAD
+        <option value="$PROJECT_DIR$/handlers/recognizebycomparehandler.py" />
+=======
+<<<<<<< HEAD
         <option value="$PROJECT_DIR$/logger.py" />
         <option value="$PROJECT_DIR$/datalayer.py" />
         <option value="$PROJECT_DIR$/.env" />
         <option value="$PROJECT_DIR$/servicelayer.py" />
 =======
 >>>>>>> 1b61aed83b85ff31e23805ecafa7d030791a864b
+>>>>>>> 2cbed67aaf43d9b4bfa789ff8b27086e2368aef5
       </list>
     </option>
   </component>
@@ -646,7 +655,15 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/handlers/recognizebycomparehandler.py">
+    <entry file="file://$PROJECT_DIR$/app.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="16" column="42" lean-forward="true" selection-start-line="16" selection-start-column="42" selection-end-line="16" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/handlers/recognizebymodelhandler.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="150">
           <caret line="10" column="37" lean-forward="false" selection-start-line="10" selection-start-column="37" selection-end-line="10" selection-end-column="37" />
@@ -662,16 +679,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/handlers/recognizebymodelhandler.py">
+    <entry file="file://$PROJECT_DIR$/handlers/recognizebycomparehandler.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="37" lean-forward="false" selection-start-line="10" selection-start-column="37" selection-end-line="10" selection-end-column="37" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app.py">
-      <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+        <state relative-caret-position="345">
+          <caret line="23" column="38" lean-forward="true" selection-start-line="23" selection-start-column="38" selection-end-line="23" selection-end-column="38" />
+=======
 <<<<<<< HEAD
         <state relative-caret-position="105">
           <caret line="7" column="18" lean-forward="true" selection-start-line="7" selection-start-column="18" selection-end-line="7" selection-end-column="18" />
@@ -687,6 +700,7 @@
         <state relative-caret-position="240">
           <caret line="16" column="42" lean-forward="true" selection-start-line="16" selection-start-column="42" selection-end-line="16" selection-end-column="42" />
 >>>>>>> 1b61aed83b85ff31e23805ecafa7d030791a864b
+>>>>>>> 2cbed67aaf43d9b4bfa789ff8b27086e2368aef5
           <folding />
         </state>
       </provider>
