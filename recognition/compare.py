@@ -119,14 +119,18 @@ def compare(reqObj, para, root, img_to_compare, step, image_64_decode, actual_im
     ctx = mx.cpu(0);
     symbol = lightened_cnn_b_feature()
     sub_folders = os.listdir(root)
+    print("root",root)
+    print("sub_folders",sub_folders)
     is_match_found = False
     if_class_found = False
     if (len(sub_folders) > 0):
         for folder in sub_folders:  # loop through all the files and folders
             if os.path.isdir(os.path.join(root, folder)):  # check whether the current object is a folder or not
                 sub_folder = os.path.join(root, folder)
+                print("subfolder", sub_folder)
                 classId = folder
-                if_class_found = True
+                print("folder",folder)
+
                 for img in os.listdir(sub_folder):
                     imgpath = os.path.join(sub_folder, img)
                     pathB = imgpath
@@ -139,14 +143,16 @@ def compare(reqObj, para, root, img_to_compare, step, image_64_decode, actual_im
                     print("--------Score------", dis)
 
                     if (dis > 0.60):
-
                         if step == 2:
                             # s3url = uploadImageToS3(image_64_decode,actual_img_id)
                             stoteMainImageOnDisk(os.environ.get("MAIN_IMAGES_STORE_PATH"), folder, image_64_decode)
                             # classId = insertInImageByName(reqObj,folder,s3url)
                         is_match_found = True
+                        if_class_found = True
+                        print("matched Class",classId)
                         break
-
+                if is_match_found == True:
+                    break
         if is_match_found == False and (step == 1):
             classId = storeImageOnDisk(root, img_to_compare, step)
             if_class_found = True
@@ -155,6 +161,7 @@ def compare(reqObj, para, root, img_to_compare, step, image_64_decode, actual_im
         classId = storeImageOnDisk(root, img_to_compare, step)
         if_class_found = True
     if if_class_found == True:
+        print("step",step)
         resp={}
         resp['status'] = 'success'
         if step == 1:

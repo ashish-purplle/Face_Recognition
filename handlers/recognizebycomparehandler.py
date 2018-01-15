@@ -30,8 +30,9 @@ def detectImageAndAssignClasses(obj,step):
     rec_start = timer()
     model = 'model/lightened_cnn/lightened_cnn'
     para = cmp.loadModel(model, 0)
+    print("detected Img",len(detected_imgs))
     for index in range(len(detected_imgs)):
-
+        print("for",detected_imgs[index])
         response = cmp.compare_two_face(obj,para, os.environ.get("DETECTED_FACES_STORE_PATH"), detected_imgs[index],step,image_64_decode,createRandomImageId("main_img"))
     rec_end = timer()
     print("-------Recognition Complete-----")
@@ -66,14 +67,19 @@ class predict(tornado.web.RequestHandler):
 class makecollage(tornado.web.RequestHandler):
     def post(self):
         response = detectImageAndAssignClasses(self,3)
-        print(response)
+        print(response )
         if(response['status'] != 'error'):
-            s3url = col.generateCollage(folderPath=response['folderPath'],width=800,height=250,shuffle=True,classid=response['classId'])
-            shutil.rmtree(response['folderPath'])
-            shutil.rmtree(os.path.join(os.environ.get("DETECTED_FACES_STORE_PATH"),response['classId']))
-            response ={}
-            response['image_url'] = s3url
-
+            if not os.path.exists(response['folderPath']):
+                response = {}
+                response['status'] = 'error'
+                response['message'] = 'No Class Found'
+            else:
+                s3url = col.generateCollage(folderPath=response['folderPath'],width=800,height=250,shuffle=True,classid=response['classId'])
+                shutil.rmtree(response['folderPath'])
+                shutil.rmtree(os.path.join(os.environ.get("DETECTED_FACES_STORE_PATH"),response['classId']))
+                response ={}
+                response['image_url'] = s3url
+        print(response)
         self.write(json.dumps(response))
 
 
