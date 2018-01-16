@@ -20,23 +20,24 @@ import shutil
 
 def detectImageAndAssignClasses(obj,step):
     image_64_decode = decodeImage(obj)
-    print("-------Detection Started-----")
+    print("***************-------Detection Started FROM CAMERA-----*******************",step)
     start_detect = timer()
     detected_imgs = prep.init(image_64_decode)
     end_detect = timer()
-    print("-------Detection Complete-----")
-    print("-------Total time in Detection-----",(end_detect-start_detect))
-    print("-------Recognition Started-----")
+    #print("-------Detection Complete-----")
+    #print("-------Total time in Detection-----",(end_detect-start_detect))
+    #print("-------Recognition Started-----")
     rec_start = timer()
     model = 'model/lightened_cnn/lightened_cnn'
     para = cmp.loadModel(model, 0)
-    print("detected Img",len(detected_imgs))
+    #print("detected Img",len(detected_imgs))
     for index in range(len(detected_imgs)):
-        print("for",detected_imgs[index])
+        #print("for",detected_imgs[index])
         response = cmp.compare_two_face(obj,para, os.environ.get("DETECTED_FACES_STORE_PATH"), detected_imgs[index],step,image_64_decode,createRandomImageId("main_img"))
     rec_end = timer()
-    print("-------Recognition Complete-----")
-    print("-------Total time in Recognition-----",(rec_end-rec_start))
+    #print("-------Recognition Complete-----")
+    #print("-------Total time in Recognition-----",(rec_end-rec_start))
+    print("***************-------Detection And Recognition Complete FROM CAMERA-----*******************", step)
     return response
 
 def decodeImage(obj):
@@ -54,20 +55,20 @@ def createRandomImageId(param):
 class savefaces(tornado.web.RequestHandler):
     def post(self):
         response = detectImageAndAssignClasses(self,1)
-        print(response)
-        print(json.dumps(response))
+        #print(response)
+        print("**********Camera 1 Output***************",json.dumps(response))
         self.write(json.dumps(response))
 
 
 class predict(tornado.web.RequestHandler):
     def post(self):
         response = detectImageAndAssignClasses(self,2)
+        print("**********Camera 2 Output***************",json.dumps(response))
         self.write(json.dumps(response))
 
 class makecollage(tornado.web.RequestHandler):
     def post(self):
         response = detectImageAndAssignClasses(self,3)
-        print(response )
         if(response['status'] != 'error'):
             if not os.path.exists(response['folderPath']):
                 response = {}
@@ -75,11 +76,12 @@ class makecollage(tornado.web.RequestHandler):
                 response['message'] = 'No Class Found'
             else:
                 s3url = col.generateCollage(folderPath=response['folderPath'],width=800,height=250,shuffle=True,classid=response['classId'])
-                shutil.rmtree(response['folderPath'])
-                shutil.rmtree(os.path.join(os.environ.get("DETECTED_FACES_STORE_PATH"),response['classId']))
+                #shutil.rmtree(response['folderPath'])
+                #shutil.rmtree(os.path.join(os.environ.get("DETECTED_FACES_STORE_PATH"),response['classId']))
                 response ={}
+                response['status'] = 'success'
                 response['image_url'] = s3url
-        print(response)
+        print("**********Camera 3 Output***************",json.dumps(response))
         self.write(json.dumps(response))
 
 

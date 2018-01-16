@@ -129,12 +129,8 @@ def make_collage(images, width, init_height,classid):
 
 def generateCollage(folderPath,width,height,shuffle,classid):
     try:
-        print(folderPath)
-        print(classid)
         files = [os.path.join(folderPath, fn) for fn in os.listdir(folderPath)]
-        print(files)
         images = [fn for fn in files if os.path.splitext(fn)[1].lower() in ('.jpg', '.jpeg', '.png')]
-        print(images)
         if not images:
             print('No images for making collage! Please select other directory with images!')
             exit(1)

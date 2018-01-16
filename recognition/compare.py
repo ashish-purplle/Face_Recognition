@@ -92,7 +92,7 @@ def stoteMainImageOnDisk(mainImgRootPath, classId, image):
 
 
 def insertInClassInfo(classId):
-    print("classId", classId)
+    #print("classId", classId)
     data = {}
     data['classId'] = classId
     dl.insertDataInClassInfo(data)
@@ -110,7 +110,7 @@ def insertInImageByName(reqObj, classId, s3url, step):
 
 def uploadImageToS3(image_64_decode, actual_img_id):
     s3url = sl.uploadToS3(image_64_decode, actual_img_id)
-    print("s3Url->", s3url)
+    print("**************s3Url************", s3url)
     return s3url
 
 
@@ -119,17 +119,17 @@ def compare(reqObj, para, root, img_to_compare, step, image_64_decode, actual_im
     ctx = mx.cpu(0);
     symbol = lightened_cnn_b_feature()
     sub_folders = os.listdir(root)
-    print("root",root)
-    print("sub_folders",sub_folders)
+    #print("root",root)
+    #print("sub_folders",sub_folders)
     is_match_found = False
     if_class_found = False
     if (len(sub_folders) > 0):
         for folder in sub_folders:  # loop through all the files and folders
             if os.path.isdir(os.path.join(root, folder)):  # check whether the current object is a folder or not
                 sub_folder = os.path.join(root, folder)
-                print("subfolder", sub_folder)
+                #print("subfolder", sub_folder)
                 classId = folder
-                print("folder",folder)
+                #print("folder",folder)
 
                 for img in os.listdir(sub_folder):
                     imgpath = os.path.join(sub_folder, img)
@@ -140,7 +140,7 @@ def compare(reqObj, para, root, img_to_compare, step, image_64_decode, actual_im
                     exector.outputs[0].wait_to_read()
                     output = exector.outputs[0].asnumpy()
                     dis = np.dot(output[0], output[1]) / np.linalg.norm(output[0]) / np.linalg.norm(output[1])
-                    print("--------Score------", dis)
+                    #print("--------Score------", dis)
 
                     if (dis > 0.60):
                         if step == 2:
@@ -149,7 +149,7 @@ def compare(reqObj, para, root, img_to_compare, step, image_64_decode, actual_im
                             # classId = insertInImageByName(reqObj,folder,s3url)
                         is_match_found = True
                         if_class_found = True
-                        print("matched Class",classId)
+                        #print("matched Class",classId)
                         break
                 if is_match_found == True:
                     break
@@ -161,7 +161,7 @@ def compare(reqObj, para, root, img_to_compare, step, image_64_decode, actual_im
         classId = storeImageOnDisk(root, img_to_compare, step)
         if_class_found = True
     if if_class_found == True:
-        print("step",step)
+        #print("step",step)
         resp={}
         resp['status'] = 'success'
         if step == 1:
