@@ -4,7 +4,6 @@ import mxnet as mx
 import argparse, time
 import os
 import dlib
-import urllib.request
 
 
 from detection.align_dlib import AlignDlib
