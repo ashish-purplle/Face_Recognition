@@ -4,7 +4,6 @@ import mxnet as mx
 import argparse, time
 import os
 import dlib
-import urllib.request
 
 
 from detection.align_dlib import AlignDlib
@@ -71,7 +70,7 @@ def detect(args):
     img = img[np.newaxis, :]  # extend to (n, c, h, w)
 
     # ctx = mx.gpu(args.gpu)
-    print(args.prefix)
+    #print(args.prefix)
     ctx = mx.cpu(0)
     _, arg_params, aux_params = mx.model.load_checkpoint(args.prefix, args.epoch)
     arg_params, aux_params = ch_dev(arg_params, aux_params, ctx)
@@ -98,7 +97,7 @@ def detect(args):
     dets = dets[keep, :]
     toc = time.time()
 
-    print ("time cost is:{}s".format(toc-tic))
+    #print ("time cost is:{}s".format(toc-tic))
     resized_images =[]
     for i in range(dets.shape[0]):
         bbox = dets[i, :4]
