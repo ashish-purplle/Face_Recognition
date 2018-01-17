@@ -13,6 +13,12 @@ RUN wget  -O /Face_Recognition/model.zip  https://www.dropbox.com/s/0lh12ljmtb7q
 && wget  -O /Face_Recognition/.env https://www.dropbox.com/s/j4jbqjvnhwm614h/.env \
 && unzip /Face_Recognition/model.zip  -d /Face_Recognition/
 
+RUN mkdir -p /Face_Recognition/out \
+&& mkdir -p /Face_Recognition/main \
+&& mkdir -p ~/.aws \
+&& wget  -O ~/.aws/credentials  https://www.dropbox.com/s/agiz7453zf3uq6k/credentials
+
+
 WORKDIR  /Face_Recognition
 CMD python app.py
 
