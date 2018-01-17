@@ -1,18 +1,14 @@
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
-import tornado.ioloop
 import tornado.web
-#import datalayer as dtl
+from tornado import gen
 import os
 import base64
-import  numpy as np
-import cv2
 import  time
 import json
 from timeit import default_timer as timer
 from detection import preprocess as prep
 from recognition import compare as cmp
-import servicelayer as sl
 import collage as col;
 import shutil
 
@@ -21,9 +17,9 @@ import shutil
 def detectImageAndAssignClasses(obj,step):
     image_64_decode = decodeImage(obj)
     print("***************-------Detection Started FROM CAMERA-----*******************",step)
-    start_detect = timer()
+    #start_detect = timer()
     detected_imgs = prep.init(image_64_decode)
-    end_detect = timer()
+    #end_detect = timer()
     #print("-------Detection Complete-----")
     #print("-------Total time in Detection-----",(end_detect-start_detect))
     #print("-------Recognition Started-----")
@@ -52,10 +48,10 @@ def createRandomFolderId(param):
 def createRandomImageId(param):
     return param+"_{}.jpeg".format(int(time.time() * 100000))
 
+
 class savefaces(tornado.web.RequestHandler):
     def post(self):
         response = detectImageAndAssignClasses(self,1)
-        #print(response)
         print("**********Camera 1 Output***************",json.dumps(response))
         self.write(json.dumps(response))
 
