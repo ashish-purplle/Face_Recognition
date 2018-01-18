@@ -11,6 +11,7 @@ from detection.symbol.resnet import *
 from detection.symbol.config import config
 from detection.symbol.processing import bbox_pred, clip_boxes, nms
 import time
+import tornado.web
 
 align_dlib = AlignDlib(os.path.join(os.path.dirname(__file__), '../model/dlib/shape_predictor_68_face_landmarks.dat'))
 
@@ -52,15 +53,17 @@ def resize(im, target_size, max_size):
 
 def detect(args):
     #print(fl)
-
+    print("detect 1")
     nparr = np.fromstring(args.img, np.uint8)
     actual_img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    print("detect 2")
     #cv2.imshow("image", actual_img)
     #cv2.waitKey(0)
 
     #image = cv2.imread(fl)
+    print(actual_img)
     image = cv2.cvtColor(actual_img, cv2.COLOR_BGR2RGB)
-
+    print("detect 3")
     #color  = cv2.imread(fl)
     img  = cv2.cvtColor(actual_img, cv2.COLOR_BGR2RGB)
     img, scale = resize(img.copy(), args.scale, args.max_scale)
@@ -68,7 +71,7 @@ def detect(args):
     img = np.swapaxes(img, 0, 2)
     img = np.swapaxes(img, 1, 2)  # change to (c, h, w) order
     img = img[np.newaxis, :]  # extend to (n, c, h, w)
-
+    print("detect 3")
     # ctx = mx.gpu(args.gpu)
     #print(args.prefix)
     ctx = mx.cpu(0)
@@ -78,7 +81,7 @@ def detect(args):
     arg_params["data"] = mx.nd.array(img, ctx)
     arg_params["im_info"] = mx.nd.array(im_info, ctx)
     exe = sym.bind(ctx, arg_params, args_grad=None, grad_req="null", aux_states=aux_params)
-
+    print("detect 4")
     tic = time.time()
     exe.forward(is_train=False)
     output_dict = {name: nd for name, nd in zip(sym.list_outputs(), exe.outputs)}
@@ -112,11 +115,13 @@ def detect(args):
         #     os.makedirs(image_output_dir)
         # cv2.imwrite(os.path.join(image_output_dir, "{}.jpg".format(int(time.time()*100000))), resized_image)
         resized_images.append(resized_image)
+    print("in detect", resized_images)
     return resized_images
     #cv2.imwrite("result.jpg", color)
 
 
 def init(img):
+    print("in init",img)
     parser = argparse.ArgumentParser(description="use pre-trainned resnet model to classify one image")
     parser.add_argument('--input-dir', type=str, action='store', default='temp', dest='input_dir')
     parser.add_argument('--output-dir', type=str, action='store', default='output', dest='output_dir')

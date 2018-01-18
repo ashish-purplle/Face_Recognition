@@ -19,6 +19,17 @@ def make_app():
 
 if __name__ == "__main__":
     app = make_app()
-    app.listen(8888)
+    server = tornado.httpserver.HTTPServer(app)
+    server.bind(8888)
+    server.start(2)  # autodetect number of cores and fork a process for each
     print("server started at port 8888")
-    tornado.ioloop.IOLoop.current().start()
+    tornado.ioloop.IOLoop.instance().start()
+
+
+    #app = make_app()
+    # app.listen(8888)
+    # server.bind(8888)
+    # server.start(0)  # Forks multiple sub-processes
+    # IOLoop.current().start()
+
+    # tornado.ioloop.IOLoop.current().start()
