@@ -83,23 +83,38 @@ def detect(args):
     exe = sym.bind(ctx, arg_params, args_grad=None, grad_req="null", aux_states=aux_params)
     print("detect 4")
     tic = time.time()
+    print("detect 5")
     exe.forward(is_train=False)
+    print("detect 6")
     output_dict = {name: nd for name, nd in zip(sym.list_outputs(), exe.outputs)}
+    print("detect 7")
     rois = output_dict['rpn_rois_output'].asnumpy()[:, 1:]  # first column is index
+    print("detect 8")
     scores = output_dict['cls_prob_reshape_output'].asnumpy()[0]
+    print("detect 9")
     bbox_deltas = output_dict['bbox_pred_reshape_output'].asnumpy()[0]
+    print("detect 10")
     pred_boxes = bbox_pred(rois, bbox_deltas)
+    print("detect 11")
     pred_boxes = clip_boxes(pred_boxes, (im_info[0][0], im_info[0][1]))
+    print("detect 12")
     cls_boxes = pred_boxes[:, 4:8]
+    print("detect 13")
     cls_scores = scores[:, 1]
+    print("detect 14")
     keep = np.where(cls_scores >= args.thresh)[0]
+    print("detect 15")
     cls_boxes = cls_boxes[keep, :]
+    print("detect 16")
     cls_scores = cls_scores[keep]
+    print("detect 17")
     dets = np.hstack((cls_boxes, cls_scores[:, np.newaxis])).astype(np.float32)
+    print("detect 18")
     keep = nms(dets.astype(np.float32), args.nms_thresh)
+    print("detect 19")
     dets = dets[keep, :]
     toc = time.time()
-
+    print("detect 20")
     #print ("time cost is:{}s".format(toc-tic))
     resized_images =[]
     for i in range(dets.shape[0]):
