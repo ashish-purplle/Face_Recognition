@@ -11,6 +11,7 @@ from detection import preprocess as prep
 from recognition import compare as cmp
 import collage as col;
 import shutil
+import urllib
 
 import threading
 from tornado.concurrent import return_future
@@ -74,9 +75,10 @@ class makecollage(tornado.web.RequestHandler):
                 response['status'] = 'error'
                 response['message'] = 'No Class Found'
             else:
-                s3url = col.generateCollage(folderPath=response['folderPath'],width=800,height=250,shuffle=True,classid=response['classId'])
+                col.generateCollage(folderPath=response['folderPath'],width=800,height=250,shuffle=True,classid=response['classId'])
                 #shutil.rmtree(response['folderPath'])
                 #shutil.rmtree(os.path.join(os.environ.get("DETECTED_FACES_STORE_PATH"),response['classId']))
+                s3url = self.request.host+"/collage/"+response['classId']+".jpg"
                 response ={}
                 response['status'] = 'success'
                 response['image_url'] = s3url

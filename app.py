@@ -14,14 +14,15 @@ def make_app():
         (r"/jio/recognition/compareface/savefaces/v1", rbch.savefaces),
         (r"/jio/recognition/compareface/predict/v1", rbch.predict),
         (r"/jio/recognition/compareface/makecollage/v1", rbch.makecollage),
-        (r"/jio/recognition/v1/searchface", rbmh.RecognizeByModelHandler),
+        (r"/jio/recognition/v1/searchface", rbmh.RecognizeByModelHandler,),
+        (r"/collage/(.*)", tornado.web.StaticFileHandler, {'path': "./collage"})
     ])
 
 if __name__ == "__main__":
     app = make_app()
     server = tornado.httpserver.HTTPServer(app)
     server.bind(8888)
-    server.start(8)  # autodetect number of cores and fork a process for each
+    server.start(1)  # autodetect number of cores and fork a process for each
     print("server started at port 8888")
     tornado.ioloop.IOLoop.instance().start()
 

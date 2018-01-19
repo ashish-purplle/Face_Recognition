@@ -88,7 +88,6 @@ def detect(args):
     dets = dets[keep, :]
     toc = time.time()
 
-    #print ("time cost is:{}s".format(toc-tic))
     resized_images =[]
     for i in range(dets.shape[0]):
         bbox = dets[i, :4]

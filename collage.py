@@ -11,6 +11,7 @@ import numpy as np
 from PIL import Image
 import io
 from io import StringIO
+import urllib
 
 
 def make_collage(images, width, init_height,classid):
@@ -78,17 +79,18 @@ def make_collage(images, width, init_height,classid):
                 x += img.size[0] + margin_size
             y += int(init_height / coef) + margin_size
 
-    print(collage_image.size)
+    print(collage_image)
 
     in_mem_file = io.BytesIO()
+    if not os.path.exists(os.environ.get("COLLAGE_STORE_PATH")):
+        os.makedirs(os.environ.get("COLLAGE_STORE_PATH"))
+    collage_image.save(os.path.join(os.environ.get("COLLAGE_STORE_PATH"),classid+".jpg"))
+    #collage_image.save(in_mem_file, format="jpeg")
+    #main_img_urls = os.path.join(os.environ.get("COLLAGE_STORE_PATH"),classid+".jpg")
 
-
-    collage_image.save(in_mem_file, format="jpeg")
-
-
-    main_img_urls = sl.uploadToS3(in_mem_file.getvalue(),classid+".jpg")
-
-    return main_img_urls
+    #main_img_urls = sl.uploadToS3(in_mem_file.getvalue(),classid+".jpg")
+    return True
+    #return main_img_urls
 
 # def main():
 #     # prepare argument parser
