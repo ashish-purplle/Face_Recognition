@@ -12,31 +12,26 @@ from recognition import compare as cmp
 import collage as col;
 import shutil
 
+import threading
+from tornado.concurrent import return_future
 
-
-def detectImageAndAssignClasses(obj,step):
+@return_future
+def detectImageAndAssignClasses(obj,step,callback=None):
     image_64_decode = decodeImage(obj)
+
     print("***************-------Detection Started FROM CAMERA-----*******************",step)
-    #start_detect = timer()
-    print("1")
+
     detected_imgs = prep.init(image_64_decode)
-    print("2")
-    #end_detect = timer()
-    #print("-------Detection Complete-----")
-    #print("-------Total time in Detection-----",(end_detect-start_detect))
-    #print("-------Recognition Started-----")
-    rec_start = timer()
     model = 'model/lightened_cnn/lightened_cnn'
     para = cmp.loadModel(model, 0)
-    #print("detected Img",len(detected_imgs))
+
     for index in range(len(detected_imgs)):
-        #print("for",detected_imgs[index])
         response = cmp.compare_two_face(obj,para, os.environ.get("DETECTED_FACES_STORE_PATH"), detected_imgs[index],step,image_64_decode,createRandomImageId("main_img"))
-    rec_end = timer()
-    #print("-------Recognition Complete-----")
-    #print("-------Total time in Recognition-----",(rec_end-rec_start))
+
     print("***************-------Detection And Recognition Complete FROM CAMERA-----*******************", step)
-    return response
+
+    callback(response)
+    #return response
 
 def decodeImage(obj):
     image_stream = obj.request.files['img'][0]
@@ -52,15 +47,20 @@ def createRandomImageId(param):
 
 
 class savefaces(tornado.web.RequestHandler):
+    @tornado.gen.coroutine
     def post(self):
-        response = detectImageAndAssignClasses(self,1)
+        print("1")
+        response = yield(detectImageAndAssignClasses(self,1))
+        print("2")
         print("**********Camera 1 Output***************",json.dumps(response))
         self.write(json.dumps(response))
+        self.finish()
 
 
 class predict(tornado.web.RequestHandler):
+    @tornado.gen.coroutine
     def post(self):
-        response = detectImageAndAssignClasses(self,2)
+        response = yield(detectImageAndAssignClasses(self,2))
         print("**********Camera 2 Output***************",json.dumps(response))
         self.write(json.dumps(response))
 

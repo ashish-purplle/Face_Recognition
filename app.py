@@ -21,7 +21,7 @@ if __name__ == "__main__":
     app = make_app()
     server = tornado.httpserver.HTTPServer(app)
     server.bind(8888)
-    server.start(2)  # autodetect number of cores and fork a process for each
+    server.start(8)  # autodetect number of cores and fork a process for each
     print("server started at port 8888")
     tornado.ioloop.IOLoop.instance().start()
 

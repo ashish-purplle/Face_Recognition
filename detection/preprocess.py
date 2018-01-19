@@ -52,69 +52,42 @@ def resize(im, target_size, max_size):
 
 
 def detect(args):
-    #print(fl)
-    print("detect 1")
     nparr = np.fromstring(args.img, np.uint8)
     actual_img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-    print("detect 2")
-    #cv2.imshow("image", actual_img)
-    #cv2.waitKey(0)
-
-    #image = cv2.imread(fl)
-    print(actual_img)
     image = cv2.cvtColor(actual_img, cv2.COLOR_BGR2RGB)
-    print("detect 3")
-    #color  = cv2.imread(fl)
     img  = cv2.cvtColor(actual_img, cv2.COLOR_BGR2RGB)
     img, scale = resize(img.copy(), args.scale, args.max_scale)
     im_info = np.array([[img.shape[0], img.shape[1], scale]], dtype=np.float32)  # (h, w, scale)
     img = np.swapaxes(img, 0, 2)
     img = np.swapaxes(img, 1, 2)  # change to (c, h, w) order
     img = img[np.newaxis, :]  # extend to (n, c, h, w)
-    print("detect 3")
-    # ctx = mx.gpu(args.gpu)
+    # # ctx = mx.gpu(args.gpu)
     #print(args.prefix)
-    ctx = mx.cpu(0)
+    ctx = mx.cpu()
     _, arg_params, aux_params = mx.model.load_checkpoint(args.prefix, args.epoch)
     arg_params, aux_params = ch_dev(arg_params, aux_params, ctx)
     sym = resnet_50(num_class=2)
     arg_params["data"] = mx.nd.array(img, ctx)
     arg_params["im_info"] = mx.nd.array(im_info, ctx)
     exe = sym.bind(ctx, arg_params, args_grad=None, grad_req="null", aux_states=aux_params)
-    print("detect 4")
     tic = time.time()
-    print("detect 5")
     exe.forward(is_train=False)
-    print("detect 6")
     output_dict = {name: nd for name, nd in zip(sym.list_outputs(), exe.outputs)}
-    print("detect 7")
     rois = output_dict['rpn_rois_output'].asnumpy()[:, 1:]  # first column is index
-    print("detect 8")
     scores = output_dict['cls_prob_reshape_output'].asnumpy()[0]
-    print("detect 9")
     bbox_deltas = output_dict['bbox_pred_reshape_output'].asnumpy()[0]
-    print("detect 10")
     pred_boxes = bbox_pred(rois, bbox_deltas)
-    print("detect 11")
     pred_boxes = clip_boxes(pred_boxes, (im_info[0][0], im_info[0][1]))
-    print("detect 12")
     cls_boxes = pred_boxes[:, 4:8]
-    print("detect 13")
     cls_scores = scores[:, 1]
-    print("detect 14")
     keep = np.where(cls_scores >= args.thresh)[0]
-    print("detect 15")
     cls_boxes = cls_boxes[keep, :]
-    print("detect 16")
     cls_scores = cls_scores[keep]
-    print("detect 17")
     dets = np.hstack((cls_boxes, cls_scores[:, np.newaxis])).astype(np.float32)
-    print("detect 18")
     keep = nms(dets.astype(np.float32), args.nms_thresh)
-    print("detect 19")
     dets = dets[keep, :]
     toc = time.time()
-    print("detect 20")
+
     #print ("time cost is:{}s".format(toc-tic))
     resized_images =[]
     for i in range(dets.shape[0]):
@@ -130,13 +103,11 @@ def detect(args):
         #     os.makedirs(image_output_dir)
         # cv2.imwrite(os.path.join(image_output_dir, "{}.jpg".format(int(time.time()*100000))), resized_image)
         resized_images.append(resized_image)
-    print("in detect", resized_images)
     return resized_images
     #cv2.imwrite("result.jpg", color)
 
 
 def init(img):
-    print("in init",img)
     parser = argparse.ArgumentParser(description="use pre-trainned resnet model to classify one image")
     parser.add_argument('--input-dir', type=str, action='store', default='temp', dest='input_dir')
     parser.add_argument('--output-dir', type=str, action='store', default='output', dest='output_dir')
