@@ -65,8 +65,9 @@ class predict(tornado.web.RequestHandler):
         self.write(json.dumps(response))
 
 class makecollage(tornado.web.RequestHandler):
+    @tornado.gen.coroutine
     def post(self):
-        response = detectImageAndAssignClasses(self,3)
+        response = yield(detectImageAndAssignClasses(self,3))
         if(response['status'] != 'error'):
             if not os.path.exists(response['folderPath']):
                 response = {}
