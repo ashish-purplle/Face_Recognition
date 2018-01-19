@@ -11,7 +11,7 @@ import uuid
 import datalayer as dl
 import servicelayer as sl
 import base64
-
+import collage as col;
 
 def read2img(root, name1, name2, size, ctx):
     pair_arr = np.zeros((2, 1, size, size), dtype=float)
@@ -146,6 +146,7 @@ def compare(reqObj, para, root, img_to_compare, step, image_64_decode, actual_im
                         if step == 2:
                             # s3url = uploadImageToS3(image_64_decode,actual_img_id)
                             stoteMainImageOnDisk(os.environ.get("MAIN_IMAGES_STORE_PATH"), folder, image_64_decode)
+                            col.generateCollage(folderPath=os.environ.get("MAIN_IMAGES_STORE_PATH") + '/' + classId, width=800, height=250, shuffle=True,classid=classId)
                             # classId = insertInImageByName(reqObj,folder,s3url)
                         is_match_found = True
                         if_class_found = True

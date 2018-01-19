@@ -224,3 +224,5 @@ cassandra.Unauthorized: Error from server: code=2100 [Unauthorized] message="Use
 [15-01-2018 05:48:23] [INFO] [] [] [] [inside insertData function try block data fetched successfully] 
 [15-01-2018 05:50:11] [INFO] [] [] [] [inside insertData function try block] 
 [15-01-2018 05:50:11] [INFO] [] [] [] [inside insertData function try block data fetched successfully] 
+[19-01-2018 05:11:43] [INFO] [] [] [] [inside insertData function try block] 
+[19-01-2018 05:11:43] [INFO] [] [] [] [inside insertData function try block data fetched successfully] 
