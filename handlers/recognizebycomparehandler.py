@@ -78,7 +78,7 @@ class makecollage(tornado.web.RequestHandler):
                 col.generateCollage(folderPath=response['folderPath'],width=800,height=250,shuffle=True,classid=response['classId'])
                 #shutil.rmtree(response['folderPath'])
                 #shutil.rmtree(os.path.join(os.environ.get("DETECTED_FACES_STORE_PATH"),response['classId']))
-                s3url = self.request.host+"/collage/"+response['classId']+".jpg"
+                s3url = 'http://'+self.request.host+"/collage/"+response['classId']+".jpg"
                 response ={}
                 response['status'] = 'success'
                 response['image_url'] = s3url

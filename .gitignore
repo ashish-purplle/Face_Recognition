@@ -5,3 +5,10 @@ etc
 detection/mxnet-face-fr50-0000.params
 TrainingData
 .idea
+main
+out
+collage
+__pycache__
+detection/__pycache__
+handllers/__pycache__
+recognition/__pycache__

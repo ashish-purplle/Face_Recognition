@@ -6,6 +6,7 @@ import tornado.web
 from handlers import recognizebycomparehandler as rbch
 from handlers import recognizebymodelhandler as rbmh
 from handlers import detectionhandler as dh
+import argparse
 
 
 def make_app():
@@ -19,10 +20,13 @@ def make_app():
     ])
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(add_help=True)
+    parser.add_argument('--cores', type=int, default=1, dest='cores')
+    args = parser.parse_args()
     app = make_app()
     server = tornado.httpserver.HTTPServer(app)
     server.bind(8888)
-    server.start(1)  # autodetect number of cores and fork a process for each
+    server.start(args.cores)  # autodetect number of cores and fork a process for each
     print("server started at port 8888")
     tornado.ioloop.IOLoop.instance().start()
 
