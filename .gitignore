@@ -10,5 +10,5 @@ out
 collage
 __pycache__
 detection/__pycache__
-handllers/__pycache__
+handlers/__pycache__
 recognition/__pycache__
