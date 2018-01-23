@@ -73,6 +73,8 @@ def lightened_cnn_b(num_classes=10575):
 def storeImageOnDisk(root, image, step):
     classId = format(int(time.time() * 100000))
     folder = os.path.join(root, str(classId))
+    if not os.path.exists(root):
+        os.makedirs(root)
     if not os.path.exists(folder):
         os.makedirs(folder)
     cv2.imwrite(os.path.join(folder, "{}.jpg".format(int(time.time() * 100000))),
@@ -85,6 +87,8 @@ def stoteMainImageOnDisk(mainImgRootPath, classId, image):
     nparr = np.fromstring(image, np.uint8)
     image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
     folder = os.path.join(mainImgRootPath, str(classId))
+    if not os.path.exists(mainImgRootPath):
+        os.makedirs(mainImgRootPath)
     if not os.path.exists(folder):
         os.makedirs(folder)
     cv2.imwrite(os.path.join(folder, "{}.jpg".format(int(time.time() * 100000))),

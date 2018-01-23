@@ -16,6 +16,7 @@ import urllib
 import threading
 from tornado.concurrent import return_future
 
+
 @return_future
 def detectImageAndAssignClasses(obj,step,callback=None):
     image_64_decode = decodeImage(obj)
@@ -50,9 +51,7 @@ def createRandomImageId(param):
 class savefaces(tornado.web.RequestHandler):
     @tornado.gen.coroutine
     def post(self):
-        print("1")
         response = yield(detectImageAndAssignClasses(self,1))
-        print("2")
         print("**********Camera 1 Output***************",json.dumps(response))
         self.write(json.dumps(response))
         self.finish()
@@ -64,6 +63,7 @@ class predict(tornado.web.RequestHandler):
         response = yield(detectImageAndAssignClasses(self,2))
         print("**********Camera 2 Output***************",json.dumps(response))
         self.write(json.dumps(response))
+        self.finish()
 
 class makecollage(tornado.web.RequestHandler):
     @tornado.gen.coroutine
@@ -84,6 +84,7 @@ class makecollage(tornado.web.RequestHandler):
                 response['image_url'] = s3url
         print("**********Camera 3 Output***************",json.dumps(response))
         self.write(json.dumps(response))
+        self.finish()
 
 
 
